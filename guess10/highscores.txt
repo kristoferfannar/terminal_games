@@ -1,0 +1,4 @@
+Kristó, 50
+q, 10
+kris2, 12
+prufa, 263
