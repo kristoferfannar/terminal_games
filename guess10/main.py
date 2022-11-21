@@ -15,11 +15,12 @@ def main():
     while (ui := input().lower()) != 'q':
         if ui == 'h':
             display_highscores()
-        if ui == 'r':
+        elif ui == 'r':
             rules()
         else:
             play()
         display_main()
+    system("clear")
 
 
 def display_main():
@@ -28,6 +29,7 @@ def display_main():
     print(f'{border:^{TERM_X}}')
     print(f'{"P - Play Game":^{TERM_X}}')
     print(f'{"R - Rules":^{TERM_X}}')
+    print(f'{"H - Highscores":^{TERM_X}}')
     print(f'{"Q - Quit":^{TERM_X}}')
     print(f'{border:^{TERM_X}}')
 
@@ -52,7 +54,33 @@ def rules():
 
 
 def display_highscores():
-    pass
+    highscores = get_highscores()
+    print_highscores(highscores)
+    user = input("Q - quit: ")
+
+
+def print_highscores(highscores):
+    display_init(len(highscores) + 4)
+    border = "#"*50
+    print(f"{border:^{TERM_X}}")
+    for index in range(len(highscores)):
+        print(
+            f"{index+1:>{round((TERM_X - 40) / 2)}}  |  NAME: {highscores[index][0][:11]:<10}   -  SCORE: {highscores[index][1]:>4}")
+    print(f"{border:^{TERM_X}}")
+
+
+def get_highscores(num=5):
+    scores = get_scores()
+    scores = sorted(scores, key=lambda x: x[1], reverse=True)
+    return scores[:num]
+
+
+def get_scores():
+    with open("highscores.txt", 'r') as scores:
+        all_scores = [score.strip().split(', ')
+                      for score in scores.readlines()]
+
+    return [[score[0], int(score[1])] for score in all_scores]
 
 
 def play():
