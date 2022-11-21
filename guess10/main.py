@@ -1,15 +1,20 @@
 from time import time, sleep
-from os import system, get_terminal_size
-from sys import platform
+from os import system, get_terminal_size, name
 
 SECONDS = 10
 
-print(platform)
+
+def init():
+    global TERM_X, TERM_Y, CLEAR
+    TERM_X, TERM_Y = get_terminal_size()
+    if name == 'nt':
+        CLEAR = 'cls'
+    else:
+        CLEAR = 'clear'
 
 
 def main():
-    global TERM_X, TERM_Y
-    TERM_X, TERM_Y = get_terminal_size()
+    init()
 
     display_main()
     while (ui := input().lower()) != 'q':
@@ -20,7 +25,7 @@ def main():
         else:
             play()
         display_main()
-    system("clear")
+    system(CLEAR)
 
 
 def display_main():
@@ -35,7 +40,7 @@ def display_main():
 
 
 def display_init(lines=0):
-    system("clear")
+    system(CLEAR)
     print('\n'*round((TERM_Y-lines) / 2))
 
 
@@ -91,14 +96,11 @@ def play():
     stop = time()
 
     user_time = stop - start
-
     difference = abs(SECONDS - user_time)
-
     score = calculate_score(difference)
 
     print(
         f"Your time was {round(user_time, 3)} seconds - {round(difference, 3)} seconds away!")
-
     print(f"Your score is: {score} points!!!")
 
     save_score(score)
@@ -109,7 +111,7 @@ def countdown():
         display_init()
         print(f"{i:^{TERM_X}}")
         sleep(1)
-    system('clear')
+    system(CLEAR)
 
 
 def calculate_score(difference):
@@ -117,7 +119,6 @@ def calculate_score(difference):
 
 
 def save_score(score):
-
     name = input("Your name: ")
     with open("highscores.txt", "a") as scores:
         scores.write(f"{name}, {score}\n")
